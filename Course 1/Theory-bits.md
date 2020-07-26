@@ -39,14 +39,14 @@
     - "defined inside" is transitive
 
     ```
-    var x = 4 \\ b1
+    var x = 4 // b1
 
     func f() {
-        fmt.Printf("%d", x) \\ b2
+        fmt.Printf("%d", x) // b2
     }
 
     func g(){
-        fmt.Printf("%d", x) \\ b3
+        fmt.Printf("%d", x) // b3
     }
     ```
 
@@ -349,3 +349,140 @@
     fmt.Scan(&appleNum)
     fmt.Printf(appleNum)
     ```
+
+# Composite Data types
+
+## Arrays
+
+- Fixed-length series of elements of a chosen type
+- Each element is accessible using subscript `[ index ]`
+
+  - Indices start at `0`
+  - Elements initializer to zero value
+  - Example decleration:
+
+  ```
+  var x [5]int
+
+  x[0] = 2
+  fmt.Printf("x[1]") // prints 0
+  ```
+
+### Array Literal
+
+- An array pre-defined with values:
+
+```
+var x [5]int = [5]{1, 2, 3, 4, 5}
+```
+
+- Length of literal must be length of array
+- `[...]` as the `size` in array literal infers `size` from number of initializers
+  ```
+  x := [...]int{1, 2, 3, 4}
+  ```
+- Iterating through Arrays
+
+  - Use a for loop with range keyword
+
+    ```
+    x := [3]int {1, 2, 3}
+
+    for i, v := range x {
+        fmt.Printf("ind %d, val %d", i, v)
+    }
+    ```
+
+## Slices
+
+- A "window" on an **underlying array**
+- Variable size, up to the whole array
+- _Pointer_ indicates the start of the slice
+- _Length_ `len()` is the number of elements in the slice
+- _Capacity_ `cap()` the maximum number of elements
+  - From start (pointer) of slice to end of slice.
+
+```
+  a1 := [3]string("a","b","c")
+  s1 := a1[0:1]
+  fmt.Printf(len(s1), cap(s1))
+```
+
+### Silce examples
+
+```
+arr := [...]string{"a","b","c","d","e","f","g"}
+
+s1 := arr[1:3]
+s2 := arr[2:5]
+
+fmt.Println(s1) // [b c]
+fmt.Println(s2) // [c d e]
+```
+
+## Accessing Slices
+
+- When writing to a slice, you are writing to the underlying array
+- Overlapping slices refer to the same elements
+  (see last example above, `"c"` is on both)
+
+### Slice Literals
+
+- Can be used to initialize a slice
+- Creates the underlying array and creates a slice to reference it
+- Slice points to the start of the array, length is capacity
+
+```
+sli := []int{1, 2, 3}
+```
+
+## Make
+
+- Create a slice (and array) using `make()`
+- 2-argument version, need to specify the length/capacity
+- Init. to zero, length == capacity
+
+```
+sli = make([]int, 10)
+```
+
+- 3-argument version, need to specify the length and capacity **separately**
+
+```
+sli = make([]int, 10, 15)
+```
+
+## Append
+
+- Size of a slice can be increased by `append()`
+- Adds elements to the end of a slice
+  - Increases the slice, _up to the capacity_ of the **underlying array**
+  - But can **increase** the size of the array if necessary, it will create a bigger array and continue appending, which will continue to increase the size of the array.
+    - There is a time penalty associated with that, but it is doable.
+  ```
+  sli := make([]int, 0, 3) // len is 0
+  sli = append(sli, 100) // len is 1
+  ```
+
+## Hash tables
+
+- Containes key/value pairs (key must be unique)
+  - Social Security Number/email
+  - GPS cords/address
+- Each value is asssociated with a unique key
+- **Hash function** is used to compute the slot for a key
+
+### Tradeoffs of Hash Tables
+
+Advantages:
+
+- Faster lookup than lsits
+  - Constant-time, vs linear-time
+- Arbitrary keys
+  - Not ints, like slices or arrays
+
+Disadvantages:
+
+- May have collisions
+  - Two keys hash to the same slot
+  - Collisions are rare.
